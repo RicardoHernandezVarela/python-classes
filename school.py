@@ -33,11 +33,25 @@ class Course:
         self.group.total_scores[self.name].append(unit[1])
 
     # Add assigment.
-    def addAssigment(self, unit, assignment):
-        self.units[unit][1].append(assignment)
+    def addAssignment(self, unit, assignment):
+        new_assignment = {
+            "title": assignment.title,
+            "points": assignment.points
+        }
+
+        self.units[unit][1].append(new_assignment)
 
     def __str__(self):
         return str(self.name) + ' ' + str(len(self.units)) + ' units'
+
+class Assignment:
+
+    def __init__(self, title, points):
+        self.title = title
+        self.points = points
+
+    def __str__(self):
+        return str(self.title) + ' ' + str(self.points)
 
 class Student:
 
@@ -47,22 +61,9 @@ class Student:
             self.lastname = lastname
             self.group = group
             self.courses = group.courses
-            self.scores = []
+            self.total_scores = group.total_scores
             group.students.append(self)  # Assign this student to a group.
         
-        def updateAssigments(self, course, unit):
-            print("")
-            """
-            for assigment in course.units[unit]:
-                if assigment not in self.assigments:
-                    self.assigments.append(assigment)
-                    self.scores.append(0)
-                else:
-                    pass
-                
-                print("Unit's assigments list updated", self.assigments)
-            """
-
         def addScore(self, index, score):
             self.scores[index] = (score)
 
@@ -100,28 +101,24 @@ def main():
     print('New unit created in {} course'.format(robotics.name))
 
     # Create an assigment for a unit.
-    assigment_1 = {
-        "title": "Arduino variables",
-        "points": 1.5
-    }
+    assignment_1 = Assignment("Arduino variables", 1.5)
 
-    robotics.addAssigment(0, assigment_1)
-    print('{} assigment added to {} unit of {} course'.format(assigment_1['title'], robotics.units[0][0], robotics.name))
+    robotics.addAssignment(0, assignment_1)
+    print('{} assignment added to {} unit of {} course'.format(assignment_1.title, robotics.units[0][0], robotics.name))
 
     # Create a student.
     ricardo = Student("Ricardo", "Varela", tenth)
+    print('Student {} was added to {} group'.format(ricardo.name, ricardo.group))
     
-    # Update assigmnets of a student.
-    ricardo.updateAssigments(robotics, 0)
 
-    assigment_2 = {
-        "title": "Arduino conditionals",
-        "points": 1
-    }
+    # Check if assignmnets of a student update.
+    print('Ricardo´s assignments {}'.format(ricardo.total_scores))
 
-    robotics.addAssigment(0, assigment_2)
+    assignment_2 = Assignment("Arduino conditionals", 1)
 
-    ricardo.updateAssigments(robotics, 0)
+    robotics.addAssignment(0, assignment_2)
+
+    print('Ricardo´s assignments {}'.format(ricardo.total_scores))
 
     # Create a new course, check if update works.
     Math = Course("Math", tenth)
@@ -133,16 +130,16 @@ def main():
     Math.addUnit("First")
     print('New unit created in {} course'.format(Math.name))
 
-    # Create an assigment for a unit.
-    assigment_3 = {
-        "title": "Solve equations",
-        "points": 1.2
-    }
+    # Create an assigment for a unit, check if update works.
+    assignment_3 = Assignment("Solve equations", 1.2)
 
-    Math.addAssigment(0, assigment_3)
-    print('{} assigment added to {} unit of {} course'.format(assigment_3['title'], Math.units[0][0], Math.name))
+    Math.addAssignment(0, assignment_3)
+    print('{} assignment added to {} unit of {} course'.format(assignment_3.title, Math.units[0][0], Math.name))
 
     print(tenth.total_scores)
+
+    # Update assigmnets of a student, check if update works.
+    print('Ricardo´s assigments {}'.format(ricardo.total_scores))
 
 """
     # Find the index of a assigment(dict) in the assigments array.
