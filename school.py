@@ -39,6 +39,7 @@ class Student:
             self.group = group
             self.courses = group.courses
             self.assigments = []
+            self.scores = []
             group.students.append(self)  # Assign this student to a group.
             
         def updateAssigments(self):
@@ -48,13 +49,32 @@ class Student:
                     for assigment in unit[1]:
                         if assigment not in self.assigments:
                             self.assigments.append(assigment)
+                            self.scores.append(0)
                         else:
                             pass
-                            
+                
                 print("Assigments list updated", self.assigments)
+
+        def addScore(self, index, score):
+            self.scores[index] = (score)
 
         def __str__(self):
             return str(self.name) + ' ' + str(self.lastname)
+
+class Score:
+
+    def __init__(self, student, assigment, score):
+        self.studen = student
+        self.assigment = assigment
+        self.score = score
+        self.total = assigment["points"] * score
+        self.index = student.assigments.index(assigment)
+        student.addScore(self.index, self.total)
+
+    def __str__(self):
+        return str(self.total)
+
+
 
 # Main flow of the script
 def main():
@@ -94,6 +114,13 @@ def main():
     robotics.addAssigment(0, assigment_2)
 
     ricardo.updateAssigments()
+
+    # Find the index of a assigment(dict) in the assigments array.
+    print(ricardo.assigments.index(assigment_1))
+
+    a = Score(ricardo, assigment_2, 10)
+    print(a.index)
+    print(ricardo.scores)
 
 #Call main() function.
 if __name__ == '__main__':
