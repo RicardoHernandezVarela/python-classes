@@ -5,7 +5,6 @@ class Group:
         self.name = name
         self.students = []
         self.courses = []
-        self.units = []
 
     def showGroupInfo(self):
         return str(self.name) +  ' ' + str(len(self.students)) + ' students'
@@ -17,20 +16,45 @@ class Course:
         self.name = name
         self.group = group
         self.units = []
-        group.courses.append(self)  # Assign a this course to its group.
+        group.courses.append(self)  # Assign this course to a group.
 
-    # Agregar unidades nuevas con lista de tasks
+    # Add unit.
     def addUnit(self):
         unit = []
         self.units.append(unit)
 
-    # Agregar tarea y su puntaje
+    # Add assigment.
     def addAssigment(self, unit, assignment):
         self.units[unit].append(assignment)
 
     def showCourseInfo(self):
         return str(self.name) + ' ' + str(len(self.units)) + ' units'
 
+class Student:
+
+        # Student info.
+        def __init__(self, name, lastname, group):
+            self.name = name
+            self.lastname = lastname
+            self.group = group
+            self.courses = group.courses
+            self.assigments = []
+            group.students.append(self)  # Assign this student to a group.
+
+        def updateAssigments(self):
+            # Get all student's assigments.
+            for course in self.courses:
+                for unit in course.units:
+                    for assigment in unit:
+                        if assigment not in self.assigments:
+                            self.assigments.append(assigment)
+                        else:
+                            pass
+                            
+                print("Assigments list updated", self.assigments)
+
+        def showStudentInfo(self):
+            return str(self.name) + ' ' + str(self.lastname)
 
 # Main flow of the script
 def main():
@@ -43,14 +67,39 @@ def main():
     robotics = Course("Robotics", tenth)
     print(robotics.showCourseInfo())
 
-    a = {
+    # Create a unit and assign it a course.
+    robotics.addUnit()
+    print(robotics.units)
+
+    # Create an assigment for a unit.
+    assigment_1 = {
         "title": "Arduino variables",
-        "points": 1.5
+        "points": 1.5,
+        "unit": 0
     }
 
+    robotics.addAssigment(0, assigment_1)
+    print(robotics.units)
+    print(len(tenth.courses))
 
-    for key in a:
-        print(a[key])
+    # Create a student.
+    ricardo = Student("Ricardo", "Varela", tenth)
+    print(ricardo.showStudentInfo())
+    
+    # Update assigmnets of a student.
+    ricardo.updateAssigments()
+
+    assigment_2 = {
+        "title": "Arduino conditionals",
+        "points": 1, 
+        "unit": 0
+    }
+
+    robotics.addAssigment(0, assigment_2)
+    ricardo.updateAssigments()
+
+
+
 
 #Call main() function.
 if __name__ == '__main__':
