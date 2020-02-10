@@ -1,3 +1,5 @@
+import copy
+
 class Group:
 
     # Group info, only name is required.
@@ -33,22 +35,23 @@ class Course:
         self.group.total_scores[self.name].append(unit[1])
 
     # Add assigment.
-    def addAssignment(self, unit, assignment):
+    def addAssignment(self, assignment):
         new_assignment = {
             "title": assignment.title,
             "points": assignment.points
         }
 
-        self.units[unit][1].append(new_assignment)
+        self.units[assignment.unit][1].append(new_assignment)
 
     def __str__(self):
         return str(self.name) + ' ' + str(len(self.units)) + ' units'
 
 class Assignment:
 
-    def __init__(self, title, points):
+    def __init__(self, title, points, unit):
         self.title = title
         self.points = points
+        self.unit = unit
 
     def __str__(self):
         return str(self.title) + ' ' + str(self.points)
@@ -61,24 +64,45 @@ class Student:
             self.lastname = lastname
             self.group = group
             self.courses = group.courses
-            self.total_scores = group.total_scores
+            self.total_scores = self.group.total_scores
+            self.student_scores = {}
             group.students.append(self)  # Assign this student to a group.
         
-        def addScore(self, index, score):
-            self.scores[index] = (score)
+        def addScore(self, score):
+
+            query = {
+                "title": score.assignment.title,
+                "points": score.assignment.points
+            }
+
+            if score.course.name not in self.student_scores:
+
+                self.student_scores[score.course.name] = copy.deepcopy(self.total_scores[score.course.name])
+                print(self.student_scores)
+
+                unitSelected = self.student_scores[score.course.name][score.unit]
+                
+                if query in unitSelected:
+                    # Find the index of a assigment(dict) in the assigments array.
+                    index = unitSelected.index(query)
+                    unitSelected[index]["points"] = score.total
+                    print(unitSelected[index]["points"])
 
         def __str__(self):
             return str(self.name) + ' ' + str(self.lastname)
 
 class Score:
 
-    def __init__(self, student, assigment, score):
-        self.studen = student
-        self.assigment = assigment
+    def __init__(self, student, course, unit, assignment, score):
+        self.student = student
+        self.course = course
+        self.unit = unit
+        self.assignment = assignment
         self.score = score
-        self.total = assigment["points"] * score
-        self.index = student.assigments.index(assigment)
-        student.addScore(self.index, self.total)
+
+        self.total = assignment.points * score
+        student.addScore(self)
+        #self.index = student.assignments.index(assignment)
 
     def __str__(self):
         return str(self.total)
@@ -101,9 +125,9 @@ def main():
     print('New unit created in {} course'.format(robotics.name))
 
     # Create an assigment for a unit.
-    assignment_1 = Assignment("Arduino variables", 1.5)
+    assignment_1 = Assignment("Arduino variables", 1.5, 0)
 
-    robotics.addAssignment(0, assignment_1)
+    robotics.addAssignment(assignment_1)
     print('{} assignment added to {} unit of {} course'.format(assignment_1.title, robotics.units[0][0], robotics.name))
 
     # Create a student.
@@ -114,9 +138,9 @@ def main():
     # Check if assignmnets of a student update.
     print('Ricardo´s assignments {}'.format(ricardo.total_scores))
 
-    assignment_2 = Assignment("Arduino conditionals", 1)
+    assignment_2 = Assignment("Arduino conditionals", 1, 0)
 
-    robotics.addAssignment(0, assignment_2)
+    robotics.addAssignment(assignment_2)
 
     print('Ricardo´s assignments {}'.format(ricardo.total_scores))
 
@@ -130,16 +154,41 @@ def main():
     Math.addUnit("First")
     print('New unit created in {} course'.format(Math.name))
 
-    # Create an assigment for a unit, check if update works.
-    assignment_3 = Assignment("Solve equations", 1.2)
+    # Create an assignment for a unit, check if update works.
+    assignment_3 = Assignment("Solve equations", 1.2, 0)
 
-    Math.addAssignment(0, assignment_3)
+    Math.addAssignment(assignment_3)
     print('{} assignment added to {} unit of {} course'.format(assignment_3.title, Math.units[0][0], Math.name))
 
     print(tenth.total_scores)
 
-    # Update assigmnets of a student, check if update works.
+    # Update assignmnets of a student, check if update works.
     print('Ricardo´s assigments {}'.format(ricardo.total_scores))
+
+    # Create a ne student, check assignments.
+    laura = Student("Laura", "Juarez", tenth)
+    print('Student {} was added to {} group'.format(laura.name, laura.group))
+
+    print('Laura assigments {}'.format(laura.total_scores))
+
+    # Create a new course, check if update works.
+    Music = Course("Music", tenth)
+
+    print(' ')
+    print('Ricardo´s assigments {}'.format(ricardo.total_scores))
+    print('Laura assigments {}'.format(laura.total_scores))
+
+    b = Score(laura, Math, 0, assignment_3, 5)
+    a = Score(ricardo, Math, 0, assignment_3, 10)
+    
+
+    print(' ')
+    print('Ricardo´s assigments {}'.format(ricardo.student_scores))
+    print('Laura assigments {}'.format(laura.student_scores))
+
+    print(' ')
+    print('Ricardo´s assigments {}'.format(ricardo.total_scores))
+    print('Laura assigments {}'.format(laura.total_scores))
 
 """
     # Find the index of a assigment(dict) in the assigments array.
