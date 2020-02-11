@@ -178,25 +178,23 @@ def main():
     print('Ricardo´s assigments {}'.format(ricardo.total_scores))
     print('Laura assigments {}'.format(laura.total_scores))
 
-    b = Score(laura, Math, 0, assignment_3, 5)
-    a = Score(ricardo, Math, 0, assignment_3, 10)
-    
+    # Provitional function to create scores and check if updates correctly.
+    def createScore(one, two):
+        score_1 = Score(one[0], one[1], one[2], one[3], one[4])
+        score_2 = Score(two[0], two[1], two[2], two[3], two[4])
+        
 
-    print(' ')
-    print('Ricardo´s assigments {}'.format(ricardo.student_scores))
-    print('Laura assigments {}'.format(laura.student_scores))
+        print(' ')
+        print('Ricardo´s assigments {}'.format(two[0].student_scores))
+        print('Laura assigments {}'.format(one[0].student_scores))
 
-    print(' ')
-    print('Ricardo´s assigments {}'.format(ricardo.total_scores))
-    print('Laura assigments {}'.format(laura.total_scores))
+        print(' ')
+        print('Ricardo´s assigments {}'.format(two[0].total_scores))
+        print('Laura assigments {}'.format(one[0].total_scores))
 
-"""
-    # Find the index of a assigment(dict) in the assigments array.
-    print(ricardo.assigments.index(assigment_1))
 
-    first_score = Score(ricardo, assigment_2, 10)
-    print('Student {} was assigned {} to {} assigment'.format(ricardo.name, first_score.total, assigment_2['title']))
-"""
+    createScore([laura, Math, 0, assignment_3, 9], [ricardo, Math, 0, assignment_3, 8])
+    createScore([laura, robotics, 0, assignment_1, 10], [ricardo, robotics, 0, assignment_2, 8])
 
 #Call main() function.
 if __name__ == '__main__':
